@@ -919,14 +919,13 @@
     const root = document.documentElement;
     if (!root || !document.body) return;
 
-    const legacyShell = document.querySelector("main.main-surface") &&
-      document.querySelector("aside.app-shell-left-panel");
-    const modernShell = isCodexEntryPage() && queryFirst("main");
-    if (!legacyShell && !modernShell) {
-      clearSkinDom();
-      return;
-    }
-    const shellMain = queryFirst("shell") || queryFirst("main");
+    // Main Codex shell is the content surface. The left rail is optional: Codex
+    // removes or rebuilds aside.app-shell-left-panel while collapsing/expanding
+    // it, and clearing the skin there flashes native colors over the active theme.
+    // True auxiliary windows (pets, blank targets) still have no main surface, so
+    // they continue to clear residual skin state.
+    const shellMain = document.querySelector("main.main-surface") ||
+      (isCodexEntryPage() ? queryFirst("main") : null);
     if (!shellMain) {
       clearSkinDom();
       return;
